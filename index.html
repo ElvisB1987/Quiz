@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+
+
+</head>
+
+<body>
+    <script>
+
+
+        fetch("quiz.json").then(function (response) {
+            if (response.status !== 200) {
+                throw new Error('Error while reading file.');
+            }
+            return response.json();
+
+        }).then(function (data) {
+            const objekatQuiz = data.quiz;
+            let brojacPitanja = 1;
+
+            var container = document.createElement('form');
+            document.body.appendChild(container);
+
+
+            for (let kljuc in objekatQuiz) {
+
+
+
+
+                container.innerHTML += '<h2> Question ' + brojacPitanja + ': ' + objekatQuiz[kljuc]['question'] + '</h2>';
+
+
+                for (let odgovor in objekatQuiz[kljuc]['options']) {
+
+                    var input = document.createElement('input');
+                    input.type = 'radio';
+                    input.className = 'inputs';
+                    input.value = 'vrednost' + odgovor;
+                    input.name = 'group' + brojacPitanja;
+                    container.appendChild(input);
+
+                    container.innerHTML += objekatQuiz[kljuc]['options'][odgovor] + '<br>';
+
+                }
+
+                brojacPitanja++
+            }
+
+
+        }).then(function () {
+
+            var mainDiv = document.querySelector(".main");
+            var checkBoxes = document.querySelectorAll(".inputs");
+
+            document.forms[0].addEventListener("change", storeCheckData);
+
+            function storeCheckData() {
+                for (var i = 0; i < checkBoxes.length; i++) {
+                    if (checkBoxes[i].checked) {
+                        localStorage.setItem('Chektab' + [i], JSON.stringify({ position: i }));
+
+
+
+
+
+                    }
+                }
+            }
+
+            function loadCheckData() {
+
+                for (let key of Object.keys(localStorage)) {
+                    console.log(key + ": " + localStorage.getItem(key));
+                    var checkedTab = localStorage.getItem(key);
+                    if (checkedTab != null) {
+                        var temp = JSON.parse(checkedTab).position;
+                        checkBoxes[temp].checked = 'true';
+                    }
+                    /*
+                                        var checkTab = localStorage.getItem('items' + [i]);
+                                        console.log(key + ": " + localStorage.getItem(key));
+                                        console.log(key);
+                                        if (checkTab != null) {
+                                            var temp = JSON.parse(checkTab).position;
+                                            console.log(temp);
+                                            checkBoxes[temp].checked = "true";
+                                            
+                                        }
+                                        */
+                }
+
+
+
+
+            }
+
+            loadCheckData();
+            /*
+var mainDiv = document.querySelector(".main");
+var checkBoxes = document.querySelectorAll(".inputs");
+
+document.forms[0].addEventListener("change", storeCheckData);
+
+function storeCheckData() {
+    for (var i = 0; i < checkBoxes.length; i++) {
+        if (checkBoxes[i].checked) {
+            localStorage.setItem("checked tab", JSON.stringify({ position: i }));
+        }
+    }
+}
+
+function loadCheckData() {
+    var checkedTab = localStorage.getItem("checked tab");
+    console.log(checkedTab);
+    if (checkedTab != null) {
+        var temp = JSON.parse(checkedTab).position;
+        console.log(temp);
+        checkBoxes[temp].checked = "true";
+    }
+}
+
+loadCheckData();
+*/
+        })
+            .catch(function (err) {
+                document.write.innerHTML = 'Fetch problem ' + err.message;
+
+            });
+
+
+    </script>
+
+</body>
+
+</html>
